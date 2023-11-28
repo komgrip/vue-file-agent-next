@@ -25,12 +25,12 @@ jobs:
         with:
           release-type: node
           path: packages/vue-file-agent-next
-          package-name: "@boindil/vue-file-agent-next"
+          package-name: '@komgrip/vue-file-agent-next'
           bump-minor-pre-major: true
           bump-patch-for-minor-pre-major: true
           default-branch: main
           release-labels: 'autorelease: published'
-          
+
       # The logic below handles the npm publication:
 
       - name: Clone repository
@@ -38,11 +38,11 @@ jobs:
         # these if statements ensure that a publication only occurs when
         # a new release is created:
         if: ${{ steps.release.outputs.releases_created }}
-        
+
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.2
         if: ${{ steps.release.outputs.releases_created }}
-        
+
       - name: Set node version to 16
         uses: actions/setup-node@v2
         with:
@@ -63,8 +63,8 @@ jobs:
         run: pnpm test
         if: ${{ steps.release.outputs.releases_created }}
 
-      - name: Publish 
-        run: pnpm publish --access public --tag latest --filter "@boindil/vue-file-agent-next"
+      - name: Publish
+        run: pnpm publish --access public --tag latest --filter "@komgrip/vue-file-agent-next"
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         if: ${{ steps.release.outputs.releases_created }}

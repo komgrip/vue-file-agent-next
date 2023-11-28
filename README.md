@@ -4,8 +4,8 @@
 <br>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@boindil/vue-file-agent-next">
-    <img src="https://flat.badgen.net/npm/v/@boindil/vue-file-agent-next" alt="Current version">
+  <a href="https://www.npmjs.com/package/@komgrip/vue-file-agent-next">
+    <img src="https://flat.badgen.net/npm/v/@komgrip/vue-file-agent-next" alt="Current version">
   </a>
   <a href="https://v3.vuejs.org/">
     <img src="https://flat.badgen.net/badge/vue.js/3.0.x/4fc08d" alt="Vue.js version">
@@ -17,11 +17,11 @@
 
   <br>
 
-  <a href="https://www.npmjs.com/package/@boindil/vue-file-agent-next">
-    <img src="https://flat.badgen.net/npm/dt/@boindil/vue-file-agent-next" alt="npm downloads">
+  <a href="https://www.npmjs.com/package/@komgrip/vue-file-agent-next">
+    <img src="https://flat.badgen.net/npm/dt/@komgrip/vue-file-agent-next" alt="npm downloads">
   </a>
-  <a href="https://www.npmjs.com/package/@boindil/vue-file-agent-next">
-    <img src="https://flat.badgen.net/npm/dw/@boindil/vue-file-agent-next" alt="npm weekly downloads">
+  <a href="https://www.npmjs.com/package/@komgrip/vue-file-agent-next">
+    <img src="https://flat.badgen.net/npm/dw/@komgrip/vue-file-agent-next" alt="npm weekly downloads">
   </a>
 </p>
 
@@ -29,10 +29,11 @@ High performant Vue file **upload** component with elegant and distinguishable *
 
 <div class="clearfix"></div>
 
-<!-- ## [Live Demo][] · [CodePen Playground](https://codepen.io/boindil/pen/<not yet ready>) 
+<!-- ## [Live Demo][] · [CodePen Playground](https://codepen.io/boindil/pen/<not yet ready>)
 
 ![Demo](website/assets/demo.gif?v=1.5)
 -->
+
 ## Features
 
 - Exclusively designed for Vue with performance and simplicity in mind
@@ -61,7 +62,11 @@ High performant Vue file **upload** component with elegant and distinguishable *
 
 ```html
 <template>
-  <VueFileAgent :uploadUrl="uploadUrl" v-model="fileRecords" v-model:rawModelValue="rawFileRecords"></VueFileAgent>
+  <VueFileAgent
+    :uploadUrl="uploadUrl"
+    v-model="fileRecords"
+    v-model:rawModelValue="rawFileRecords"
+  ></VueFileAgent>
 </template>
 ```
 
@@ -83,10 +88,10 @@ High performant Vue file **upload** component with elegant and distinguishable *
         rawFileRecords: [],
         uploadUrl: 'https://example.com',
         // ...
-      };
+      }
     },
     // ...
-  };
+  }
 </script>
 ```
 
@@ -98,20 +103,20 @@ Yes. That's it. It's _that_ simple. See [Advanced Usage](#advanced-usage) sectio
 
 ```console
 # NPM
-npm install @boindil/vue-file-agent-next --save
+npm install @komgrip/vue-file-agent-next --save
 
 # Yarn
-yarn add @boindil/vue-file-agent-next
+yarn add @komgrip/vue-file-agent-next
 
 # PNPM
-pnpm add @boindil/vue-file-agent-next
+pnpm add @komgrip/vue-file-agent-next
 ```
 
 ```javascript
 import {createApp} from 'vue'
-import VueFileAgentNext from '@boindil/vue-file-agent-next'
+import VueFileAgentNext from '@komgrip/vue-file-agent-next'
 
-import '@boindil/vue-file-agent-next/dist/vue-file-agent-next.css'
+import '@komgrip/vue-file-agent-next/dist/vue-file-agent-next.css'
 
 createApp(App).use(VueFileAgentNext).mount('#app')
 ```
@@ -120,12 +125,18 @@ or with script tag
 
 ```html
 <!-- jsdelivr cdn -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@boindil/vue-file-agent-next@latest/dist/vue-file-agent-next.css" />
-<script src="https://cdn.jsdelivr.net/npm/@boindil/vue-file-agent-next@latest/dist/vue-file-agent-next.umd.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@komgrip/vue-file-agent-next@latest/dist/vue-file-agent-next.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/@komgrip/vue-file-agent-next@latest/dist/vue-file-agent-next.umd.js"></script>
 
 <!-- unpkg -->
-<link rel="stylesheet" href="https://unpkg.com/@boindil/vue-file-agent-next@latest/dist/vue-file-agent-next.css" />
-<script src="https://unpkg.com/@boindil/vue-file-agent-next@latest/dist/vue-file-agent-next.umd.js"></script>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/@komgrip/vue-file-agent-next@latest/dist/vue-file-agent-next.css"
+/>
+<script src="https://unpkg.com/@komgrip/vue-file-agent-next@latest/dist/vue-file-agent-next.umd.js"></script>
 ```
 
 [Download from Github](https://github.com/boindil/vue-file-agent-next/releases)

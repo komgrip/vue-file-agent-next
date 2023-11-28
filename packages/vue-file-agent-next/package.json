@@ -1,5 +1,5 @@
 {
-  "name": "@boindil/vue-file-agent-next",
+  "name": "@komgrip/vue-file-agent-next",
   "displayName": "VueFileAgentNext",
   "description": "VueFileAgent for Vue 3",
   "version": "1.0.5",
@@ -67,12 +67,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/boindil/vue-file-agent-next.git"
+    "url": "https://github.com/komgrip/vue-file-agent-next.git"
   },
   "bugs": {
-    "url": "https://github.com/boindil/vue-file-agent-next/issues"
+    "url": "https://github.com/komgrip/vue-file-agent-next/issues"
   },
-  "homepage": "https://github.com/boindil/vue-file-agent-next",
+  "homepage": "https://github.com/komgrip/vue-file-agent-next",
   "keywords": [
     "vue3",
     "vue",

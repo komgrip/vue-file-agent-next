@@ -61,15 +61,15 @@ You can also use `pnpm dev --filter vue-file-agent-next` to only open the main h
 
 For adding a new component, there are some notes...
 
-* They should only exist in the `./packages/vue-file-agent-next/src/components` directory
-* You should first review the `./packages/vue-file-agent-next/src/types` directory and get familiar with the internal types that you can use
-* They should follow `<script setup lang="ts">` syntax, to ensure uniformity, there are *some* exceptions to this rule regarding Vue SFC being unable to import or extend types
-* All Props and Emits should be fully written as TypeScript interfaces, the more strongly typed, the better
+- They should only exist in the `./packages/vue-file-agent-next/src/components` directory
+- You should first review the `./packages/vue-file-agent-next/src/types` directory and get familiar with the internal types that you can use
+- They should follow `<script setup lang="ts">` syntax, to ensure uniformity, there are _some_ exceptions to this rule regarding Vue SFC being unable to import or extend types
+- All Props and Emits should be fully written as TypeScript interfaces, the more strongly typed, the better
 
 After the implementation of the component, you can finally begin introducing the component to be exported by the main package, and usable by users of the library. To do that you will need to:
 
 1. Add the component to the import/export list, located in `./packages/vue-file-agent-next/src/components/index.ts`
-2. Next, it must be imported into `./packages/vue-file-agent-next/VueFileAgent.ts` *please ensure that your import is made directly to the component, and not to the previous index.ts file*
+2. Next, it must be imported into `./packages/vue-file-agent-next/VueFileAgent.ts` _please ensure that your import is made directly to the component, and not to the previous index.ts file_
 3. After that, export it in the `export {}` list that contains the other components to be exported
 4. Finally, it must be included in the exported interface of **GlobalComponents**, following the pattern of `Component: typeof Component`
 
@@ -91,7 +91,7 @@ In general, always be careful when clicking external links. As programmers, it s
 
 VueFileAgent uses <https://github.com/googleapis/release-please> to automate releases using workflows. The `.github/workflows/release-please.yaml` workflow will auto-generate releases when using conventional commits. We encourage all commit messages to follow conventional commit guidelines to keep commits clean and automate releases
 
-The workflow `.github/workflows/npm-publish.yaml` will then auto-publish at <https://www.npmjs.com/package/@boindil/vue-file-agent-next>
+The workflow `.github/workflows/npm-publish.yaml` will then auto-publish at <https://www.npmjs.com/package/@komgrip/vue-file-agent-next>
 
 ## For Collaborators: Manual Releases
 
