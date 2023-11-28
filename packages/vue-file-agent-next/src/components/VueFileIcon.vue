@@ -21,7 +21,7 @@ export default /* #__PURE__ */ defineComponent({
       if (!this.viewBox && this.icon && this.icon.viewBox) {
         return this.icon.viewBox
       }
-      return this.viewBox ? this.viewBox : '0 0 100 100'
+      return this.viewBox ? this.viewBox : '0 0 25 25'
     },
     icon(): SvgIcon {
       if (this.name) {

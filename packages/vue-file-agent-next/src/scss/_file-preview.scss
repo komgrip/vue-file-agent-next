@@ -10,7 +10,7 @@
 
     &::before,
     &::after {
-      content: ' ';
+      content: " ";
       position: absolute;
       left: 0;
       top: 0;
@@ -63,7 +63,7 @@
       text-overflow: ellipsis;
       line-height: 28px;
       height: 28px;
-      font-size: 16px;
+      font-size: 12px;
     }
 
     .file-delete {
@@ -93,16 +93,16 @@
       z-index: 455;
       position: absolute;
       top: 50%;
-      height: 72px;
-      width: 72px;
-      margin-top: -36px;
-      left: 50%;
+      height: 55px;
+      width: 55px;
+      margin-top: -28px;
+      left: 58%;
       margin-left: -36px;
     }
 
     .file-icon svg {
-      width: 72px;
-      height: 72px;
+      width: 55px;
+      height: 55px;
       fill: #fff;
     }
 
@@ -119,6 +119,7 @@
       line-height: 25px;
       padding: 0 5px;
       z-index: 3;
+      font-size: 10px;
     }
 
     .file-size {
@@ -133,6 +134,7 @@
       line-height: 25px;
       padding: 0 5px;
       z-index: 4;
+      font-size: 10px;
     }
 
     .image-dimension .image-dimension-width,
@@ -141,7 +143,7 @@
     }
 
     .image-dimension .image-dimension-width::after {
-      content: 'x';
+      content: "x";
     }
 
     .image-dimension {
@@ -155,6 +157,7 @@
       line-height: 25px;
       padding: 0 5px;
       z-index: 4;
+      font-size: 10px;
     }
 
     .file-name,

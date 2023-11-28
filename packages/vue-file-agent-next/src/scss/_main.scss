@@ -11,7 +11,7 @@
 }
 
 .is-drag-over::before {
-  content: ' ';
+  content: " ";
 }
 
 .is-disabled .vue-file-agent {
@@ -19,9 +19,9 @@
   pointer-events: none;
 }
 
-.grid-box-item {
-  transition-duration: 600ms;
-}
+// .grid-box-item {
+//   transition-duration: 600ms;
+// }
 
 .grid-box-enter,
 .grid-box-leave-to {

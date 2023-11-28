@@ -32,7 +32,20 @@ const c = {
     'tar',
     // 'xml'
   ],
-  'executable': ['apk', 'bat', 'bin', 'cgi', 'pl', 'com', 'exe', 'gadget', 'jar', 'py', 'wsf', 'ipa'],
+  'executable': [
+    'apk',
+    'bat',
+    'bin',
+    'cgi',
+    'pl',
+    'com',
+    'exe',
+    'gadget',
+    'jar',
+    'py',
+    'wsf',
+    'ipa',
+  ],
   'font': ['fnt', 'fon', 'otf', 'ttf'],
   'image': ['ai', 'bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'ps', 'psd', 'svg', 'tif', 'tiff'],
   'markup': [
@@ -111,6 +124,6 @@ const c = {
   'pdf': ['pdf'],
   'folder': ['folder'],
   'play': ['play'],
-};
+}
 
-export default c;
+export default c

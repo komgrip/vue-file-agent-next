@@ -1,28 +1,28 @@
-import ajax from './ajax-request';
-import { ConfigureFn, AjaxResponse, AjaxError } from './ajax-request';
-import FileRecord from './file-record';
+import ajax from './ajax-request'
+import {ConfigureFn, AjaxResponse, AjaxError} from './ajax-request'
+import FileRecord from './file-record'
 
-type ProgressFn = (event: ProgressEvent) => void;
-export type CreateFormDataFn = (fileRecord: FileRecord) => FormData;
+type ProgressFn = (event: ProgressEvent) => void
+export type CreateFormDataFn = (fileRecord: FileRecord) => FormData
 
 export interface TusOptions {
-  retryDelays?: number[];
-  metadata?: any;
+  retryDelays?: number[]
+  metadata?: any
 }
 
-export type TusOptionsFn = (fileRecord: FileRecord) => TusOptions;
+export type TusOptionsFn = (fileRecord: FileRecord) => TusOptions
 
 class UploadHelper {
   public addHeaders(xhr: XMLHttpRequest, headers: object): XMLHttpRequest {
-    xhr.setRequestHeader('Accept', 'application/json');
+    xhr.setRequestHeader('Accept', 'application/json')
     if (headers) {
       for (const key in headers) {
         if (headers.hasOwnProperty(key)) {
-          xhr.setRequestHeader(key, (headers as any)[key]);
+          xhr.setRequestHeader(key, (headers as any)[key])
         }
       }
     }
-    return xhr;
+    return xhr
   }
 
   public doUpload(
@@ -33,12 +33,12 @@ class UploadHelper {
     configureFn?: ConfigureFn
   ): Promise<AjaxResponse> {
     return ajax.post(url, formData, (xhr) => {
-      this.addHeaders(xhr, headers);
-      xhr.upload.addEventListener('progress', progressCallback, false);
+      this.addHeaders(xhr, headers)
+      xhr.upload.addEventListener('progress', progressCallback, false)
       if (typeof configureFn === 'function') {
-        configureFn(xhr);
+        configureFn(xhr)
       }
-    });
+    })
   }
 
   public doDeleteUpload(
@@ -48,15 +48,15 @@ class UploadHelper {
     configureFn?: ConfigureFn
   ): Promise<AjaxResponse> {
     if (typeof uploadData !== 'string') {
-      uploadData = JSON.stringify(uploadData);
+      uploadData = JSON.stringify(uploadData)
     }
     return ajax.delete(url, uploadData, (xhr) => {
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      this.addHeaders(xhr, headers);
+      xhr.setRequestHeader('Content-Type', 'application/json')
+      this.addHeaders(xhr, headers)
       if (typeof configureFn === 'function') {
-        configureFn(xhr);
+        configureFn(xhr)
       }
-    });
+    })
   }
 
   public doUpdateUpload(
@@ -66,15 +66,15 @@ class UploadHelper {
     configureFn?: ConfigureFn
   ): Promise<AjaxResponse> {
     if (typeof uploadData !== 'string') {
-      uploadData = JSON.stringify(uploadData);
+      uploadData = JSON.stringify(uploadData)
     }
     return ajax.put(url, uploadData, (xhr) => {
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      this.addHeaders(xhr, headers);
+      xhr.setRequestHeader('Content-Type', 'application/json')
+      this.addHeaders(xhr, headers)
       if (typeof configureFn === 'function') {
-        configureFn(xhr);
+        configureFn(xhr)
       }
-    });
+    })
   }
 
   // doUploadAxios(axios, formData, progressCallback){
@@ -89,31 +89,31 @@ class UploadHelper {
   // }
 
   public prepareUploadError(fileRecord: FileRecord, err: AjaxError, timeout?: number) {
-    let errorText = err.message;
+    let errorText = err.message
     if (err.response && err.response.data) {
       try {
-        const errorMsg = err.response.data.error || JSON.parse(err.response.data).error;
-        errorText = errorMsg;
+        const errorMsg = err.response.data.error || JSON.parse(err.response.data).error
+        errorText = errorMsg
       } catch (e) {
         // ignore
       }
     }
     if (!fileRecord.error) {
-      fileRecord.error = {};
+      fileRecord.error = {}
     }
-    fileRecord.error.upload = errorText;
-    fileRecord.upload.data = undefined;
-    fileRecord.upload.error = errorText;
+    fileRecord.error.upload = errorText
+    fileRecord.upload.data = undefined
+    fileRecord.upload.error = errorText
     if (timeout) {
       window.setTimeout(() => {
         if (!fileRecord.error) {
-          fileRecord.error = {};
+          fileRecord.error = {}
         }
-        fileRecord.error.upload = false;
+        fileRecord.error.upload = false
         if (!fileRecord.error.size && !fileRecord.error.type) {
-          fileRecord.error = false;
+          fileRecord.error = false
         }
-      }, timeout);
+      }, timeout)
     }
   }
 
@@ -127,78 +127,78 @@ class UploadHelper {
   ) {
     let updateOverallProgress = () => {
       /* no op */
-    };
+    }
     if (progressFn) {
       updateOverallProgress = () => {
-        let prgTotal = 0;
+        let prgTotal = 0
         for (const fileRecord of fileRecords) {
-          prgTotal += fileRecord.progress() as number;
+          prgTotal += fileRecord.progress() as number
         }
-        progressFn(prgTotal / fileRecords.length);
-      };
+        progressFn(prgTotal / fileRecords.length)
+      }
     }
-    const promises: Array<Promise<AjaxResponse | AjaxError>> = [];
-    let failedUploadsCount = 0;
+    const promises: Array<Promise<AjaxResponse | AjaxError>> = []
+    let failedUploadsCount = 0
     for (const fileRecord of fileRecords) {
-      let formData;
+      let formData
       if (typeof createFormData === 'function') {
-        formData = createFormData(fileRecord);
+        formData = createFormData(fileRecord)
       } else {
-        formData = new FormData();
-        formData.append('file', fileRecord.file as File);
-        formData.append('filename', fileRecord.name());
+        formData = new FormData()
+        formData.append('file', fileRecord.file as File)
+        formData.append('filename', fileRecord.name())
       }
       const promise = this.doUpload(
         url,
         headers,
         formData,
         (progressEvent) => {
-          const percentCompleted = (progressEvent.loaded * 100) / progressEvent.total;
+          const percentCompleted = (progressEvent.loaded * 100) / progressEvent.total
           // do not complete until promise resolved
-          fileRecord.progress(percentCompleted >= 100 ? 99.9999 : percentCompleted);
-          updateOverallProgress();
+          fileRecord.progress(percentCompleted >= 100 ? 99.9999 : percentCompleted)
+          updateOverallProgress()
         },
         (xhr) => {
-          fileRecord.xhr = xhr;
+          fileRecord.xhr = xhr
           if (typeof configureFn === 'function') {
-            configureFn(xhr);
+            configureFn(xhr)
           }
         }
-      );
+      )
       promises.push(
         new Promise((resolve, reject) => {
           promise.then(
             (response) => {
-              delete fileRecord.xhr;
-              fileRecord.upload.data = response.data;
-              fileRecord.upload.error = false;
-              fileRecord.progress(100);
+              delete fileRecord.xhr
+              fileRecord.upload.data = response.data
+              fileRecord.upload.error = false
+              fileRecord.progress(100)
               if (fileRecord.xhrQueue) {
-                fileRecord.xhrQueue();
-                delete fileRecord.xhrQueue;
+                fileRecord.xhrQueue()
+                delete fileRecord.xhrQueue
               }
-              resolve(response);
+              resolve(response)
             } /* */,
             (err) => {
-              this.prepareUploadError(fileRecord, err);
-              resolve(err);
-              failedUploadsCount++;
+              this.prepareUploadError(fileRecord, err)
+              resolve(err)
+              failedUploadsCount++
             } /* */
-          );
+          )
         })
-      );
+      )
     }
     // return Promise.all(promises);
     return new Promise((resolve, reject) => {
       Promise.all(promises).then((responses) => {
         if (failedUploadsCount === promises.length) {
           // all uploads failed
-          reject(responses);
-          return;
+          reject(responses)
+          return
         }
-        resolve(responses);
-      }, reject);
-    });
+        resolve(responses)
+      }, reject)
+    })
   }
 
   public deleteUpload(
@@ -210,27 +210,27 @@ class UploadHelper {
   ) {
     return new Promise((resolve, reject) => {
       if (fileRecord.xhr) {
-        fileRecord.xhr.abort();
+        fileRecord.xhr.abort()
       }
       if (uploadData === undefined) {
-        uploadData = fileRecord.upload.data;
+        uploadData = fileRecord.upload.data
       }
       if (uploadData) {
         this.doDeleteUpload(url, headers, uploadData, (xhr) => {
           if (typeof configureFn === 'function') {
-            configureFn(xhr);
+            configureFn(xhr)
           }
         }).then(
           (result) => {
-            resolve(result);
+            resolve(result)
           },
           (err) => {
-            this.prepareUploadError(fileRecord, err);
-            reject(err);
+            this.prepareUploadError(fileRecord, err)
+            reject(err)
           }
-        );
+        )
       }
-    });
+    })
   }
 
   public updateUpload(
@@ -244,33 +244,33 @@ class UploadHelper {
       if (fileRecord.xhr) {
         // probably updated while being uploaded.
         fileRecord.xhrQueue = () => {
-          this.updateUpload(url, headers, fileRecord, uploadData);
-        };
-        return resolve(undefined);
+          this.updateUpload(url, headers, fileRecord, uploadData)
+        }
+        return resolve(undefined)
       }
       if (uploadData === undefined) {
-        uploadData = fileRecord.upload.data || {};
-        uploadData.old_filename = fileRecord.oldFileName;
-        uploadData.filename = fileRecord.name();
+        uploadData = fileRecord.upload.data || {}
+        uploadData.old_filename = fileRecord.oldFileName
+        uploadData.filename = fileRecord.name()
       }
       if (uploadData) {
         this.doUpdateUpload(url, headers, uploadData, (xhr) => {
           if (typeof configureFn === 'function') {
-            configureFn(xhr);
+            configureFn(xhr)
           }
         }).then(
           (response) => {
-            fileRecord.upload.data = response.data;
-            fileRecord.upload.error = false;
-            resolve(response);
+            fileRecord.upload.data = response.data
+            fileRecord.upload.error = false
+            resolve(response)
           },
           (err) => {
-            this.prepareUploadError(fileRecord, err);
-            reject(err);
+            this.prepareUploadError(fileRecord, err)
+            reject(err)
           }
-        );
+        )
       }
-    });
+    })
   }
 
   public doTusUpload(
@@ -282,18 +282,20 @@ class UploadHelper {
     tusOptionsFn?: TusOptionsFn,
     uploadWithCredentials?: boolean
   ) {
-    const tusOptions: TusOptions = tusOptionsFn ? tusOptionsFn(fileRecord) : {};
+    const tusOptions: TusOptions = tusOptionsFn ? tusOptionsFn(fileRecord) : {}
     return new Promise((resolve, reject) => {
       if (!tus) {
-        return reject(new Error('tus required. Please install tus-js-client'));
+        return reject(new Error('tus required. Please install tus-js-client'))
       }
       // https://github.com/tus/tus-js-client
       // Create a new tus upload
-      const file = fileRecord.file;
+      const file = fileRecord.file
       const upload = new tus.Upload(file, {
         endpoint: url,
         headers,
-        retryDelays: tusOptions.retryDelays ? tusOptions.retryDelays : [0, 3000, 5000, 10000, 20000],
+        retryDelays: tusOptions.retryDelays
+          ? tusOptions.retryDelays
+          : [0, 3000, 5000, 10000, 20000],
         metadata: tusOptions.metadata
           ? tusOptions.metadata
           : {
@@ -301,25 +303,25 @@ class UploadHelper {
               filetype: file.type,
             },
         onError(error: any) {
-          reject(error);
+          reject(error)
           // console.log("Failed because: " + error)
         },
         onProgress(bytesUploaded: number, bytesTotal: number) {
-          const event = { loaded: bytesUploaded, total: bytesTotal } as ProgressEvent;
-          progressCallback(event);
+          const event = {loaded: bytesUploaded, total: bytesTotal} as ProgressEvent
+          progressCallback(event)
         },
         onSuccess() {
-          resolve(upload);
+          resolve(upload)
         },
         onBeforeRequest: function (req: any) {
-          const xhr: XMLHttpRequest = req.getUnderlyingObject();
-          xhr.withCredentials = uploadWithCredentials === true;
+          const xhr: XMLHttpRequest = req.getUnderlyingObject()
+          xhr.withCredentials = uploadWithCredentials === true
         },
-      });
-      fileRecord.tusUpload = upload;
+      })
+      fileRecord.tusUpload = upload
       // Start the upload
-      upload.start();
-    });
+      upload.start()
+    })
   }
 
   public tusUpload(
@@ -333,17 +335,17 @@ class UploadHelper {
   ) {
     let updateOverallProgress = () => {
       /* no op */
-    };
+    }
     if (progressFn) {
       updateOverallProgress = () => {
-        let prgTotal = 0;
+        let prgTotal = 0
         for (const fileRecord of fileRecords) {
-          prgTotal += fileRecord.progress() as number;
+          prgTotal += fileRecord.progress() as number
         }
-        progressFn(prgTotal / fileRecords.length);
-      };
+        progressFn(prgTotal / fileRecords.length)
+      }
     }
-    const promises = [];
+    const promises = []
     for (const fileRecord of fileRecords) {
       const promise = this.doTusUpload(
         tus,
@@ -351,56 +353,56 @@ class UploadHelper {
         fileRecord,
         headers,
         (progressEvent: ProgressEvent) => {
-          const percentCompleted = (progressEvent.loaded * 100) / progressEvent.total;
+          const percentCompleted = (progressEvent.loaded * 100) / progressEvent.total
           // do not complete until promise resolved
-          fileRecord.progress(percentCompleted >= 100 ? 99.9999 : percentCompleted);
-          updateOverallProgress();
+          fileRecord.progress(percentCompleted >= 100 ? 99.9999 : percentCompleted)
+          updateOverallProgress()
         },
         tusOptionsFn,
         uploadWithCredentials
-      );
+      )
       promise.then(
         (response) => {
           // delete fileRecord.tusUpload;
-          fileRecord.progress(100);
+          fileRecord.progress(100)
         },
         (err) => {
-          this.prepareUploadError(fileRecord, err);
+          this.prepareUploadError(fileRecord, err)
         }
-      );
-      promises.push(promise);
+      )
+      promises.push(promise)
     }
-    return Promise.all(promises);
+    return Promise.all(promises)
   }
 
   public tusDeleteUpload(tus: any, url: string, headers: object, fileRecord: FileRecord) {
     return new Promise((resolve, reject) => {
       if (!tus) {
-        return reject('tus required');
+        return reject('tus required')
       }
       if (!fileRecord.tusUpload) {
-        return resolve(undefined);
+        return resolve(undefined)
       }
       // const shouldTerminate = true;
       const abort = (shouldTerminate: boolean) => {
         return new Promise((res, rej) => {
           fileRecord.tusUpload.abort(shouldTerminate, (err: any) => {
             if (err) {
-              this.prepareUploadError(fileRecord, err);
-              rej(err);
-              return;
+              this.prepareUploadError(fileRecord, err)
+              rej(err)
+              return
             }
-            res(undefined);
-          });
-        });
-      };
+            res(undefined)
+          })
+        })
+      }
       abort(false).then(() => {
         window.setTimeout(() => {
-          abort(true).then(resolve, reject);
-        }, 1000);
-      });
-    });
+          abort(true).then(resolve, reject)
+        }, 1000)
+      })
+    })
   }
 }
 
-export default new UploadHelper();
+export default new UploadHelper()
