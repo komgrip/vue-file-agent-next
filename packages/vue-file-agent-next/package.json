@@ -2,7 +2,7 @@
   "name": "@komgrip/vue-file-agent-next",
   "displayName": "VueFileAgentNext",
   "description": "VueFileAgent for Vue 3",
-  "version": "1.0.5",
+  "version": "1.0.12",
   "license": "MIT",
   "main": "./dist/vue-file-agent-next.umd.js",
   "module": "./dist/vue-file-agent-next.es.js",
@@ -38,6 +38,7 @@
     "vue": "^3.2.43"
   },
   "dependencies": {
+    "@komgrip/vue-file-agent-next": "^1.0.10",
     "@nuxt/kit": "3.0.0"
   },
   "devDependencies": {
