@@ -47,13 +47,12 @@
         class="thumbnail"
         style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; overflow: hidden"
       >
-        <!-- <a
+        <a
           v-if="hasLinkableUrl"
           :href="fileRecord.url()"
           target="_blank"
           :title="fileRecord.name()"
-        > -->
-        <a v-if="hasLinkableUrl" @click="showViewer(fileRecord.url())" :title="fileRecord.name()">
+        >
           <img class="file-preview-img" :src="fileRecord.src()" style="cursor: zoom-in" />
         </a>
         <img v-else class="file-preview-img" :src="fileRecord.src()" />
@@ -303,15 +302,6 @@ export default /* #__PURE__ */ defineComponent({
       }
 
       this.$emit('dismisserror', this.fileRecord)
-    },
-    showViewer(src: string): void {
-      const fullImage = document.querySelector('#full-image')
-      const imageViewer = document.querySelector('#image-viewer')
-
-      if (fullImage && imageViewer) {
-        fullImage.src = src
-        imageViewer.style.display = 'block'
-      }
     },
   },
 })
