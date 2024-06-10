@@ -55,6 +55,11 @@
         >
           <img class="file-preview-img" :src="fileRecord.src()" style="cursor: zoom-in" />
         </a>
+
+        <img v-if="fileRecord.videoThumbnail" class="file-preview-img" :src="fileRecord.src()" />
+        <video v-else-if="fileRecord.raw.type.includes('video')" style="width: 100%; height: 100%">
+          <source :src="fileRecord.urlValue || ''" :type="fileRecord.raw.type" />
+        </video>
         <img v-else class="file-preview-img" :src="fileRecord.src()" />
       </span>
       <span class="file-ext">{{ fileRecord.ext() }}</span>

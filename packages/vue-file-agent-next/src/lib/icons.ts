@@ -24,10 +24,10 @@ const icons = {
     [
       'M13 9h5.5L13 3.5V9M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m11 17v-6l-3 2.2V13H7v6h7v-2.2l3 2.2Z',
     ],
-    '#ef6f2e'
+    '#cdcdcd'
   ),
   'audio-playable': new SvgIcon(playIconPaths, '#039', '0 0 48 48'),
-  'video-playable': new SvgIcon(playIconPaths, '#ef6f2e', '0 0 48 48'),
+  'video-playable': new SvgIcon(playIconPaths, '#cdcdcd', '0 0 48 48'),
   'archive': new SvgIcon(
     [
       'M20 6h-8l-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2m0 12h-4v-2h-2v2H4V8h10v2h2V8h4v10m-4-6v-2h2v2h-2m-2 0h2v2h-2v-2m4 4h-2v-2h2v2Z',
