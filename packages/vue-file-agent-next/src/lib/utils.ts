@@ -1,4 +1,5 @@
 import heic2any from 'heic2any'
+// @ts-ignore
 import * as piexif from 'piexifjs'
 import {getFilesFromDroppedItems} from './drop-handler'
 
@@ -173,24 +174,24 @@ class Utils {
   //   return -1
   // }
 
-  public getImageOrientation(file: File): Promise<number> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      if (!reader.readAsArrayBuffer) {
-        return resolve(-3)
-      }
-      reader.onload = (event) => {
-        if (!(event.target && event.target.result)) {
-          return resolve(-3)
-        }
-        resolve(this.getImageOrientationFromArrayBuffer(event.target.result as ArrayBuffer))
-      }
-      // https://stackoverflow.com/questions/3248946/what-is-the-maximum-size-of-jpeg-metadata
-      // https://twitter.com/jaffathecake/status/1085443592678752256
-      // reader.readAsArrayBuffer(file);
-      reader.readAsArrayBuffer(file.slice(0, 65536))
-    })
-  }
+  // public getImageOrientation(file: File): Promise<number> {
+  //   return new Promise((resolve, reject) => {
+  //     const reader = new FileReader()
+  //     if (!reader.readAsArrayBuffer) {
+  //       return resolve(-3)
+  //     }
+  //     reader.onload = (event) => {
+  //       if (!(event.target && event.target.result)) {
+  //         return resolve(-3)
+  //       }
+  //       resolve(this.getImageOrientationFromArrayBuffer(event.target.result as ArrayBuffer))
+  //     }
+  //     // https://stackoverflow.com/questions/3248946/what-is-the-maximum-size-of-jpeg-metadata
+  //     // https://twitter.com/jaffathecake/status/1085443592678752256
+  //     // reader.readAsArrayBuffer(file);
+  //     reader.readAsArrayBuffer(file.slice(0, 65536))
+  //   })
+  // }
 
   // public rotateCanvas(
   //   srcOrientation: number,
@@ -507,9 +508,12 @@ class Utils {
     if (file.type === 'image/heic' || file.type === 'image/heif') {
       console.log('Handling HEIC file')
       await this.handleHeicFile(file, image)
+      // @ts-ignore
       createObjectURL = null
+      // @ts-ignore
       revokeObjectURL = null
     } else {
+      // @ts-ignore
       if (createObjectURL && revokeObjectURL) {
         shouldRevoke = true
         image.src = createObjectURL(file)
