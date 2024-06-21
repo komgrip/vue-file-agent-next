@@ -1,3 +1,5 @@
+import heic2any from 'heic2any'
+import * as piexif from 'piexifjs'
 import {getFilesFromDroppedItems} from './drop-handler'
 
 export type RGBA = [number, number, number, number]
@@ -32,44 +34,44 @@ class Utils {
     return array
   }
 
-  public getAverageColor(arr: Uint8ClampedArray): RGBA | undefined {
-    const bytesPerPixel = 4
-    const arrLength = arr.length
-    if (arrLength < bytesPerPixel) {
-      return
-    }
-    const step = 5
-    const len = arrLength - (arrLength % bytesPerPixel)
-    const preparedStep = (step || 1) * bytesPerPixel
+  // public getAverageColor(arr: Uint8ClampedArray): RGBA | undefined {
+  //   const bytesPerPixel = 4
+  //   const arrLength = arr.length
+  //   if (arrLength < bytesPerPixel) {
+  //     return
+  //   }
+  //   const step = 5
+  //   const len = arrLength - (arrLength % bytesPerPixel)
+  //   const preparedStep = (step || 1) * bytesPerPixel
 
-    let redTotal = 0
-    let greenTotal = 0
-    let blueTotal = 0
-    let alphaTotal = 0
-    let count = 0
+  //   let redTotal = 0
+  //   let greenTotal = 0
+  //   let blueTotal = 0
+  //   let alphaTotal = 0
+  //   let count = 0
 
-    for (let i = 0; i < len; i += preparedStep) {
-      const alpha = arr[i + 3]
-      const red = arr[i] * alpha
-      const green = arr[i + 1] * alpha
-      const blue = arr[i + 2] * alpha
+  //   for (let i = 0; i < len; i += preparedStep) {
+  //     const alpha = arr[i + 3]
+  //     const red = arr[i] * alpha
+  //     const green = arr[i + 1] * alpha
+  //     const blue = arr[i + 2] * alpha
 
-      redTotal += red
-      greenTotal += green
-      blueTotal += blue
-      alphaTotal += alpha
-      count++
-    }
+  //     redTotal += red
+  //     greenTotal += green
+  //     blueTotal += blue
+  //     alphaTotal += alpha
+  //     count++
+  //   }
 
-    return alphaTotal
-      ? [
-          Math.round(redTotal / alphaTotal),
-          Math.round(greenTotal / alphaTotal),
-          Math.round(blueTotal / alphaTotal),
-          Math.round(alphaTotal / count),
-        ]
-      : [0, 0, 0, 0]
-  }
+  //   return alphaTotal
+  //     ? [
+  //         Math.round(redTotal / alphaTotal),
+  //         Math.round(greenTotal / alphaTotal),
+  //         Math.round(blueTotal / alphaTotal),
+  //         Math.round(alphaTotal / count),
+  //       ]
+  //     : [0, 0, 0, 0]
+  // }
 
   public createVideoThumbnail(
     video: HTMLVideoElement,
@@ -120,56 +122,56 @@ class Utils {
     })
   }
 
-  public getDataURL(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        if (!(event.target && event.target.result)) {
-          return resolve('')
-        }
-        resolve(event.target.result as string)
-      }
-      reader.readAsDataURL(file)
-    })
-  }
+  // public getDataURL(file: File): Promise<string> {
+  //   return new Promise((resolve, reject) => {
+  //     const reader = new FileReader()
+  //     reader.onload = (event) => {
+  //       if (!(event.target && event.target.result)) {
+  //         return resolve('')
+  //       }
+  //       resolve(event.target.result as string)
+  //     }
+  //     reader.readAsDataURL(file)
+  //   })
+  // }
 
-  public getImageOrientationFromArrayBuffer(buffer: ArrayBuffer): number {
-    // -2: not jpeg
-    // -1: not defined
-    const view = new DataView(buffer)
-    if (view.getUint16(0, false) !== 0xffd8) {
-      return -2
-    }
-    const length = view.byteLength
-    let offset = 2
-    while (offset < length) {
-      if (view.getUint16(offset + 2, false) <= 8) {
-        return -1
-      }
-      const marker = view.getUint16(offset, false)
-      offset += 2
-      if (marker === 0xffe1) {
-        if (view.getUint32((offset += 2), false) !== 0x45786966) {
-          return -1
-        }
-        const little = view.getUint16((offset += 6), false) === 0x4949
-        offset += view.getUint32(offset + 4, little)
-        const tags = view.getUint16(offset, little)
-        offset += 2
-        for (let i = 0; i < tags; i++) {
-          if (view.getUint16(offset + i * 12, little) === 0x0112) {
-            return view.getUint16(offset + i * 12 + 8, little)
-          }
-        }
-        // tslint:disable-next-line
-      } else if ((marker & 0xff00) !== 0xff00) {
-        break
-      } else {
-        offset += view.getUint16(offset, false)
-      }
-    }
-    return -1
-  }
+  // public getImageOrientationFromArrayBuffer(buffer: ArrayBuffer): number {
+  //   // -2: not jpeg
+  //   // -1: not defined
+  //   const view = new DataView(buffer)
+  //   if (view.getUint16(0, false) !== 0xffd8) {
+  //     return -2
+  //   }
+  //   const length = view.byteLength
+  //   let offset = 2
+  //   while (offset < length) {
+  //     if (view.getUint16(offset + 2, false) <= 8) {
+  //       return -1
+  //     }
+  //     const marker = view.getUint16(offset, false)
+  //     offset += 2
+  //     if (marker === 0xffe1) {
+  //       if (view.getUint32((offset += 2), false) !== 0x45786966) {
+  //         return -1
+  //       }
+  //       const little = view.getUint16((offset += 6), false) === 0x4949
+  //       offset += view.getUint32(offset + 4, little)
+  //       const tags = view.getUint16(offset, little)
+  //       offset += 2
+  //       for (let i = 0; i < tags; i++) {
+  //         if (view.getUint16(offset + i * 12, little) === 0x0112) {
+  //           return view.getUint16(offset + i * 12 + 8, little)
+  //         }
+  //       }
+  //       // tslint:disable-next-line
+  //     } else if ((marker & 0xff00) !== 0xff00) {
+  //       break
+  //     } else {
+  //       offset += view.getUint16(offset, false)
+  //     }
+  //   }
+  //   return -1
+  // }
 
   public getImageOrientation(file: File): Promise<number> {
     return new Promise((resolve, reject) => {
@@ -190,113 +192,113 @@ class Utils {
     })
   }
 
-  public rotateCanvas(
-    srcOrientation: number,
-    canvas: HTMLCanvasElement,
-    ctx: CanvasRenderingContext2D,
-    width: number,
-    height: number
-  ) {
-    // set proper canvas dimensions before transform & export
-    if (4 < srcOrientation && srcOrientation < 9) {
-      canvas.width = height
-      canvas.height = width
-    } else {
-      canvas.width = width
-      canvas.height = height
-    }
+  // public rotateCanvas(
+  //   srcOrientation: number,
+  //   canvas: HTMLCanvasElement,
+  //   ctx: CanvasRenderingContext2D,
+  //   width: number,
+  //   height: number
+  // ) {
+  //   // set proper canvas dimensions before transform & export
+  //   if (4 < srcOrientation && srcOrientation < 9) {
+  //     canvas.width = height
+  //     canvas.height = width
+  //   } else {
+  //     canvas.width = width
+  //     canvas.height = height
+  //   }
 
-    // transform context before drawing image
-    switch (srcOrientation) {
-      case 2:
-        ctx.transform(-1, 0, 0, 1, width, 0)
-        break
-      case 3:
-        ctx.transform(-1, 0, 0, -1, width, height)
-        break
-      case 4:
-        ctx.transform(1, 0, 0, -1, 0, height)
-        break
-      case 5:
-        ctx.transform(0, 1, 1, 0, 0, 0)
-        break
-      case 6:
-        ctx.transform(0, 1, -1, 0, height, 0)
-        break
-      case 7:
-        ctx.transform(0, -1, -1, 0, height, width)
-        break
-      case 8:
-        ctx.transform(0, -1, 1, 0, 0, width)
-        break
-      default:
-        break
-    }
-  }
+  //   // transform context before drawing image
+  //   switch (srcOrientation) {
+  //     case 2:
+  //       ctx.transform(-1, 0, 0, 1, width, 0)
+  //       break
+  //     case 3:
+  //       ctx.transform(-1, 0, 0, -1, width, height)
+  //       break
+  //     case 4:
+  //       ctx.transform(1, 0, 0, -1, 0, height)
+  //       break
+  //     case 5:
+  //       ctx.transform(0, 1, 1, 0, 0, 0)
+  //       break
+  //     case 6:
+  //       ctx.transform(0, 1, -1, 0, height, 0)
+  //       break
+  //     case 7:
+  //       ctx.transform(0, -1, -1, 0, height, width)
+  //       break
+  //     case 8:
+  //       ctx.transform(0, -1, 1, 0, 0, width)
+  //       break
+  //     default:
+  //       break
+  //   }
+  // }
 
-  public getImageResized(
-    image: HTMLImageElement,
-    widthLimit: number,
-    heightLimit?: number,
-    orientation?: number,
-    calculateAverageColor?: boolean
-  ): ImageThumbnail | null {
-    let width = image.width
-    let height = image.height
-    const thumbnailSize = widthLimit
-    if (widthLimit && heightLimit) {
-      width = widthLimit
-      height = heightLimit
-    } else {
-      if (width > height) {
-        if (width > thumbnailSize) {
-          height *= thumbnailSize / width
-          width = thumbnailSize
-        }
-      } else {
-        if (height > thumbnailSize) {
-          width *= thumbnailSize / height
-          height = thumbnailSize
-        }
-      }
-    }
+  // public getImageResized(
+  //   image: HTMLImageElement,
+  //   widthLimit: number,
+  //   heightLimit?: number,
+  //   orientation?: number,
+  //   calculateAverageColor?: boolean
+  // ): ImageThumbnail | null {
+  //   let width = image.width
+  //   let height = image.height
+  //   const thumbnailSize = widthLimit
+  //   if (widthLimit && heightLimit) {
+  //     width = widthLimit
+  //     height = heightLimit
+  //   } else {
+  //     if (width > height) {
+  //       if (width > thumbnailSize) {
+  //         height *= thumbnailSize / width
+  //         width = thumbnailSize
+  //       }
+  //     } else {
+  //       if (height > thumbnailSize) {
+  //         width *= thumbnailSize / height
+  //         height = thumbnailSize
+  //       }
+  //     }
+  //   }
 
-    width = Math.floor(width)
-    height = Math.floor(height)
+  //   width = Math.floor(width)
+  //   height = Math.floor(height)
 
-    const canvas = document.createElement('canvas')
-    const context = canvas.getContext('2d')
-    if (!context) {
-      return null
-    }
+  //   const canvas = document.createElement('canvas')
+  //   const context = canvas.getContext('2d')
+  //   if (!context) {
+  //     return null
+  //   }
 
-    canvas.width = width
-    canvas.height = height
+  //   canvas.width = width
+  //   canvas.height = height
 
-    if (orientation !== undefined) {
-      this.rotateCanvas(orientation, canvas, context, width, height)
-    }
+  //   if (orientation !== undefined) {
+  //     this.rotateCanvas(orientation, canvas, context, width, height)
+  //   }
 
-    context.drawImage(image, 0, 0, width, height)
-    let avgColor = null
-    try {
-      let rgba: RGBA | undefined
-      if (calculateAverageColor) {
-        const imageData = context.getImageData(0, 0, width, height)
-        rgba = this.getAverageColor(imageData.data)
-      }
-      if (rgba) {
-        avgColor = rgba
-      }
-    } catch (e) {
-      /* security error, img on diff domain */
-    }
-    return {
-      image,
-      url: canvas.toDataURL('image/png'),
-      color: avgColor,
-    } as ImageThumbnail
-  }
+  //   context.drawImage(image, 0, 0, width, height)
+  //   let avgColor = null
+  //   try {
+  //     let rgba: RGBA | undefined
+  //     if (calculateAverageColor) {
+  //       const imageData = context.getImageData(0, 0, width, height)
+  //       rgba = this.getAverageColor(imageData.data)
+  //     }
+  //     if (rgba) {
+  //       avgColor = rgba
+  //     }
+  //   } catch (e) {
+  //     /* security error, img on diff domain */
+  //   }
+  //   return {
+  //     image,
+  //     url: canvas.toDataURL('image/png'),
+  //     color: avgColor,
+  //   } as ImageThumbnail
+  // }
 
   public resizeImageUrl(
     image: HTMLImageElement,
@@ -333,49 +335,49 @@ class Utils {
     })
   }
 
-  public resizeImageFile(
-    image: HTMLImageElement,
-    file: File,
-    thumbnailSize: number,
-    calculateAverageColor?: boolean
-  ): Promise<ImageThumbnail | null> {
-    return new Promise((resolve, reject) => {
-      if (file.type.indexOf('image') === -1) {
-        reject(new Error('Not an image'))
-        return
-      }
-      const createObjectURL = (window.URL || window.webkitURL || {}).createObjectURL
-      const revokeObjectURL = (window.URL || window.webkitURL || {}).revokeObjectURL
-      let shouldRevoke = false
-      const orientationPromise = this.getImageOrientation(file)
-      image.onload = () => {
-        orientationPromise.then((orientation) => {
-          const resized = this.getImageResized(
-            image,
-            thumbnailSize,
-            undefined,
-            orientation,
-            calculateAverageColor
-          )
-          if (shouldRevoke) {
-            revokeObjectURL(image.src)
-          }
-          resolve(resized)
-        })
-      }
-      if (!(file instanceof File)) {
-        return reject('Invalid file object. Use url or a valid instance of File class')
-      }
-      if (typeof createObjectURL === 'function' && typeof revokeObjectURL === 'function') {
-        shouldRevoke = true
-        image.src = createObjectURL(file)
-        return
-      }
-      this.getDataURL(file).then((dataUrl) => {
-        image.src = dataUrl
-      })
-    })
-  }
+  // public resizeImageFile(
+  //   image: HTMLImageElement,
+  //   file: File,
+  //   thumbnailSize: number,
+  //   calculateAverageColor?: boolean
+  // ): Promise<ImageThumbnail | null> {
+  //   return new Promise((resolve, reject) => {
+  //     if (file.type.indexOf('image') === -1) {
+  //       reject(new Error('Not an image'))
+  //       return
+  //     }
+  //     const createObjectURL = (window.URL || window.webkitURL || {}).createObjectURL
+  //     const revokeObjectURL = (window.URL || window.webkitURL || {}).revokeObjectURL
+  //     let shouldRevoke = false
+  //     const orientationPromise = this.getImageOrientation(file)
+  //     image.onload = () => {
+  //       orientationPromise.then((orientation) => {
+  //         const resized = this.getImageResized(
+  //           image,
+  //           thumbnailSize,
+  //           undefined,
+  //           orientation,
+  //           calculateAverageColor
+  //         )
+  //         if (shouldRevoke) {
+  //           revokeObjectURL(image.src)
+  //         }
+  //         resolve(resized)
+  //       })
+  //     }
+  //     if (!(file instanceof File)) {
+  //       return reject('Invalid file object. Use url or a valid instance of File class')
+  //     }
+  //     if (typeof createObjectURL === 'function' && typeof revokeObjectURL === 'function') {
+  //       shouldRevoke = true
+  //       image.src = createObjectURL(file)
+  //       return
+  //     }
+  //     this.getDataURL(file).then((dataUrl) => {
+  //       image.src = dataUrl
+  //     })
+  //   })
+  // }
 
   public resizeImage(
     thumbnailSize: number,
@@ -485,6 +487,252 @@ class Utils {
 
   public getFilesFromDroppedItems(dataTransfer: DataTransfer) {
     return getFilesFromDroppedItems(dataTransfer)
+  }
+
+  public async resizeImageFile(
+    image: HTMLImageElement,
+    file: File,
+    thumbnailSize: number,
+    calculateAverageColor?: boolean
+  ): Promise<ImageThumbnail | null> {
+    console.log('Starting resizeImageFile')
+    if (!file.type.startsWith('image/')) {
+      throw new Error('Not an image')
+    }
+
+    let shouldRevoke = false
+    let createObjectURL = (window.URL || window.webkitURL)?.createObjectURL
+    let revokeObjectURL = (window.URL || window.webkitURL)?.revokeObjectURL
+
+    if (file.type === 'image/heic' || file.type === 'image/heif') {
+      console.log('Handling HEIC file')
+      await this.handleHeicFile(file, image)
+      createObjectURL = null
+      revokeObjectURL = null
+    } else {
+      if (createObjectURL && revokeObjectURL) {
+        shouldRevoke = true
+        image.src = createObjectURL(file)
+      } else {
+        const dataUrl = await this.getDataURL(file)
+        image.src = dataUrl
+      }
+    }
+
+    return new Promise((resolve, reject) => {
+      image.onload = async () => {
+        console.log('Image loaded')
+        const orientation = this.getImageOrientation(file)
+        console.log('Orientation:', orientation)
+        const resized = this.getImageResized(
+          image,
+          thumbnailSize,
+          undefined,
+          orientation,
+          calculateAverageColor
+        )
+        if (shouldRevoke && revokeObjectURL) {
+          revokeObjectURL(image.src)
+        }
+        resolve(resized)
+      }
+
+      image.onerror = (error) => {
+        console.error('Failed to load image', error)
+        reject(new Error('Failed to load image'))
+      }
+    })
+  }
+
+  private async handleHeicFile(file: File, image: HTMLImageElement) {
+    try {
+      const blob = await heic2any({blob: file, toType: 'image/jpeg'})
+      const dataUrl = await this.getDataURL(blob as Blob)
+      image.src = dataUrl
+      console.log('HEIC file processed')
+    } catch (error) {
+      console.error('Error handling HEIC file:', error)
+    }
+  }
+
+  public getDataURL(file: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        if (!event.target?.result) {
+          return resolve('')
+        }
+        resolve(event.target.result as string)
+      }
+      reader.onerror = (error) => {
+        console.error('Failed to read data URL', error)
+        reject(new Error('Failed to read data URL'))
+      }
+      reader.readAsDataURL(file)
+    })
+  }
+
+  public getImageOrientation(file: File): number {
+    let orientation = 1
+    try {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          const data = event.target.result as string
+          const exifObj = piexif.load(data)
+          orientation = exifObj['0th'][piexif.ImageIFD.Orientation] || 1
+        }
+      }
+      reader.readAsDataURL(file)
+    } catch (error) {
+      console.error('Error reading EXIF data:', error)
+    }
+    return orientation
+  }
+
+  public rotateCanvas(
+    srcOrientation: number,
+    canvas: HTMLCanvasElement,
+    ctx: CanvasRenderingContext2D,
+    width: number,
+    height: number
+  ) {
+    if (4 < srcOrientation && srcOrientation < 9) {
+      canvas.width = height
+      canvas.height = width
+    } else {
+      canvas.width = width
+      canvas.height = height
+    }
+
+    switch (srcOrientation) {
+      case 2:
+        ctx.transform(-1, 0, 0, 1, width, 0)
+        break
+      case 3:
+        ctx.transform(-1, 0, 0, -1, width, height)
+        break
+      case 4:
+        ctx.transform(1, 0, 0, -1, 0, height)
+        break
+      case 5:
+        ctx.transform(0, 1, 1, 0, 0, 0)
+        break
+      case 6:
+        ctx.transform(0, 1, -1, 0, height, 0)
+        break
+      case 7:
+        ctx.transform(0, -1, -1, 0, height, width)
+        break
+      case 8:
+        ctx.transform(0, -1, 1, 0, 0, width)
+        break
+      default:
+        break
+    }
+  }
+
+  public getImageResized(
+    image: HTMLImageElement,
+    widthLimit: number,
+    heightLimit?: number,
+    orientation?: number,
+    calculateAverageColor?: boolean
+  ): ImageThumbnail | null {
+    let width = image.width
+    let height = image.height
+    const thumbnailSize = widthLimit
+    if (widthLimit && heightLimit) {
+      width = widthLimit
+      height = heightLimit
+    } else {
+      if (width > height) {
+        if (width > thumbnailSize) {
+          height *= thumbnailSize / width
+          width = thumbnailSize
+        }
+      } else {
+        if (height > thumbnailSize) {
+          width *= thumbnailSize / height
+          height = thumbnailSize
+        }
+      }
+    }
+
+    width = Math.floor(width)
+    height = Math.floor(height)
+
+    const canvas = document.createElement('canvas')
+    const context = canvas.getContext('2d')
+    if (!context) {
+      return null
+    }
+
+    if (orientation !== undefined) {
+      this.rotateCanvas(orientation, canvas, context, width, height)
+    } else {
+      canvas.width = width
+      canvas.height = height
+    }
+
+    context.drawImage(image, 0, 0, width, height)
+    let avgColor = null
+    try {
+      let rgba: RGBA | undefined
+      if (calculateAverageColor) {
+        const imageData = context.getImageData(0, 0, width, height)
+        rgba = this.getAverageColor(imageData.data)
+      }
+      if (rgba) {
+        avgColor = rgba
+      }
+    } catch (e) {
+      console.error('Error calculating average color:', e)
+    }
+    return {
+      image,
+      url: canvas.toDataURL('image/png'),
+      color: avgColor,
+    } as ImageThumbnail
+  }
+
+  public getAverageColor(arr: Uint8ClampedArray): RGBA | undefined {
+    const bytesPerPixel = 4
+    const arrLength = arr.length
+    if (arrLength < bytesPerPixel) {
+      return
+    }
+    const step = 5
+    const len = arrLength - (arrLength % bytesPerPixel)
+    const preparedStep = (step || 1) * bytesPerPixel
+
+    let redTotal = 0
+    let greenTotal = 0
+    let blueTotal = 0
+    let alphaTotal = 0
+    let count = 0
+
+    for (let i = 0; i < len; i += preparedStep) {
+      const alpha = arr[i + 3]
+      const red = arr[i] * alpha
+      const green = arr[i + 1] * alpha
+      const blue = arr[i + 2] * alpha
+
+      redTotal += red
+      greenTotal += green
+      blueTotal += blue
+      alphaTotal += alpha
+      count++
+    }
+
+    return alphaTotal
+      ? [
+          Math.round(redTotal / alphaTotal),
+          Math.round(greenTotal / alphaTotal),
+          Math.round(blueTotal / alphaTotal),
+          Math.round(alphaTotal / count),
+        ]
+      : [0, 0, 0, 0]
   }
 }
 

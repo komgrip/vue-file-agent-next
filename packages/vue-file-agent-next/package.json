@@ -2,7 +2,7 @@
   "name": "@komgrip/vue-file-agent-next",
   "displayName": "VueFileAgentNext",
   "description": "VueFileAgent for Vue 3",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "license": "MIT",
   "main": "./dist/vue-file-agent-next.umd.js",
   "module": "./dist/vue-file-agent-next.es.js",
@@ -39,7 +39,9 @@
   },
   "dependencies": {
     "@komgrip/vue-file-agent-next": "^1.0.10",
-    "@nuxt/kit": "3.0.0"
+    "@nuxt/kit": "3.0.0",
+    "heic2any": "^0.0.4",
+    "piexifjs": "^1.0.6"
   },
   "devDependencies": {
     "@popperjs/core": "^2.11.6",
