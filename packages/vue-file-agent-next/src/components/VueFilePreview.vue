@@ -47,10 +47,18 @@
         class="thumbnail"
         style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; overflow: hidden"
       >
-        <a
+        <!-- <a
           v-if="hasLinkableUrl"
           :href="fileRecord.url()"
           target="_blank"
+          :title="fileRecord.name()"
+        > 
+          <img class="file-preview-img" :src="fileRecord.src()" style="cursor: zoom-in" />
+        </a>
+        -->
+        <a
+          v-if="hasLinkableUrl"
+          @click="showViewer(fileRecord.url() || '')"
           :title="fileRecord.name()"
         >
           <img class="file-preview-img" :src="fileRecord.src()" style="cursor: zoom-in" />
@@ -63,7 +71,13 @@
         >
           <source :src="fileRecord.urlValue || ''" :type="fileRecord.raw.type" />
         </video>
-        <img v-else class="file-preview-img" :src="fileRecord.src()" />
+        <img
+          v-else
+          class="file-preview-img"
+          :src="fileRecord.src()"
+          @click="showViewer(fileRecord.url() || '')"
+          :style="fileRecord.url() || '' ? `cursor: pointer;` : ''"
+        />
       </span>
       <span class="file-ext">{{ fileRecord.ext() }}</span>
       <span class="file-size">{{ fileRecord.size() }}</span>
@@ -127,6 +141,16 @@
       </span>
     </span>
   </div>
+
+  <div class="vue-file-image-viewer" :class="{'d-none': !isShowImageViewer}" @click="hideViewer">
+    <span class="close" @click="hideViewer">&times;</span>
+    <img
+      class="vue-file-modal-content"
+      :src="imageViewerSrc"
+      :class="{'d-none': !isShowImageViewer}"
+      @click="stopPropagation"
+    />
+  </div>
 </template>
 
 <script lang="ts">
@@ -162,6 +186,8 @@ export default /* #__PURE__ */ defineComponent({
     return {
       isEditInputFocused: false,
       isEditCancelable: true,
+      isShowImageViewer: false,
+      imageViewerSrc: '',
     }
   },
   computed: {
@@ -311,8 +337,86 @@ export default /* #__PURE__ */ defineComponent({
 
       this.$emit('dismisserror', this.fileRecord)
     },
+    showViewer(src: string): void {
+      if (src === '') {
+        return
+      }
+
+      this.isShowImageViewer = true
+      this.imageViewerSrc = src
+
+      document.body.classList.add('vue-file-image-viewer-on')
+    },
+    hideViewer(): void {
+      this.isShowImageViewer = false
+      document.body.classList.remove('vue-file-image-viewer-on')
+    },
+    stopPropagation(event: Event): void {
+      event.stopPropagation()
+    },
   },
 })
 </script>
 
-<style></style>
+<style scoped lang="scss">
+.d-none {
+  display: none;
+}
+
+.vue-file-image-viewer {
+  display: block;
+  position: fixed;
+  z-index: 999;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+.vue-file-modal-content {
+  margin: auto;
+  display: block;
+  width: 50%;
+  max-width: 700px;
+  border-radius: 5px;
+  transition: 0.3s;
+  &:hover {
+    opacity: 1 !important;
+  }
+}
+.vue-file-modal-content {
+  animation-name: zoom;
+  animation-duration: 0.6s;
+}
+@keyframes zoom {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+.vue-file-image-viewer .close {
+  position: absolute;
+  top: 10px;
+  right: 45px;
+  color: #f1f1f1;
+  font-size: 45px;
+  font-weight: 300;
+  transition: 0.3s;
+}
+.vue-file-image-viewer .close:hover,
+.vue-file-image-viewer .close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 700px) {
+  .vue-file-modal-content {
+    width: 100%;
+  }
+}
+</style>
